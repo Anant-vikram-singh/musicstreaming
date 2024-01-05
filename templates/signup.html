@@ -75,7 +75,16 @@
                 <label for="signupPassword">Password:</label>
                 <input type="password" id="signupPassword" name="signupPassword" required>
             </div>
-
+            <div class="form-group">
+                <label for="loginType">Login As:</label>
+                <select id="loginType" name="loginType">
+                    <option value="normal">Normal User</option>
+                    <option value="creator">Creator</option>
+                </select>
+            </div>
+            {% if error %}
+            <div style="color: red;">{{ error }}</div>
+            {% endif %}
             <button type="submit">Sign Up</button>
         </form>
         <div class="switch-form">
