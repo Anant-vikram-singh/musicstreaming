@@ -18,5 +18,66 @@
       <a href="/signup"><button type="button" class="btn">signup</button></a>
       <a href="/admin"><button type="button" class="btn">admin</button></a>
     </div>
+
+    <div>
+      <h1>List of Songs</h1>
+      <ul id="songList">
+        {% for song in songs %}
+        <li>
+          <strong>{{ song.name }}</strong>
+          <p>{{ song.lyrics }}</p>
+          <p>Duration: {{ song.duration }}</p>
+          <button onclick="addToPlaylist('{{ song }}')">+</button>
+          <button onclick="removeFromPlaylist('{{ song }}')">-</button>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div>
+      <button id="savePlaylist">Save Playlist</button>
+
+      <h2>Your Playlist:</h2>
+      <ul id="playlist">
+        <!-- Render the selected songs here -->
+      </ul>
+    </div>
+
+    <script>
+      const songList = document.getElementById("songList");
+      const playlist = document.getElementById("playlist");
+      const savePlaylistButton = document.getElementById("savePlaylist");
+
+      // Keep track of selected songs
+      const selectedSongs = [];
+
+      // Event listener for saving the playlist
+      savePlaylistButton.addEventListener("click", function () {
+        // Send selectedSongs to the server using an AJAX request
+        // You can use fetch() or an AJAX library like Axios
+        // Example: fetch('/save_playlist', { method: 'POST', body: JSON.stringify(selectedSongs) })
+        console.log(selectedSongs); // For demonstration purposes
+
+        // You should populate the songList dynamically from your server data
+        // Example: fetch('/get_songs').then(response => response.json()).then(data => { /* Render songs dynamically */ });
+      });
+
+      function addToPlaylist(song) {
+        const li = document.createElement("li");
+        console.log(song);
+        li.textContent = song.name;
+        playlist.appendChild(li);
+        selectedSongs.push(song);
+      }
+
+      // Function to remove a song from the playlist
+      function removeFromPlaylist(song) {
+        const index = selectedSongs.indexOf(song);
+        if (index !== -1) {
+          selectedSongs.splice(index, 1);
+          playlist.removeChild(playlist.childNodes[index]);
+        }
+      }
+    </script>
   </body>
 </html>

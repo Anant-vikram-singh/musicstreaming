@@ -10,8 +10,15 @@ app.app_context().push()
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    songs = Song.query.all()  # Retrieve all songs from the database
+    return render_template('home.html', songs = songs)
 
+@app.route('/save_playlist', methods=['POST'])
+def save_playlist():
+    selected_songs = request.json  # Assuming data is sent as JSON
+    # Process and save the playlist data as needed
+    print(selected_songs)  # For demonstration purposes
+    return 'Playlist saved successfully'
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -97,9 +104,7 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
-
 @app.route('/admin', methods=['GET', 'POST'])
-
 def admin():
     if 'logged_in' not in session or session['role'] != 'admin':
         flash('You are not authorized to view this page')
