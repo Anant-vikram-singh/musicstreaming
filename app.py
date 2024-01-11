@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for,flash
+from flask import Flask, flash, render_template, request, redirect, url_for,flash
 from model import db,User,Song
 app=Flask(__name__)
 from flask import session
@@ -25,6 +25,7 @@ def login():
         if user:
             session['logged_in'] = True
             session['username'] = username
+            session['role'] = user_type
             return redirect(url_for('onboarding'))
 
         else:
@@ -49,17 +50,61 @@ def signup():
         if(new_user):
             session['logged_in'] = True
             session['username'] = username
+            session['role'] = user_type
             print("user created")
             print(session)
             return redirect(url_for('onboarding'))
 
     return render_template('signup.html', error=None)
 
+@app.route('/creator', methods=['GET', 'POST'])
+def creator():
+    if request.method == 'POST':
+        # Retrieve form data from the request
+        name = request.form.get('name')
+        lyrics = request.form.get('lyrics')
+        duration = request.form.get('duration')
+        album_id = request.form.get('album_id')
+
+        # Perform validation (e.g., check if required fields are provided)
+        if not name or not album_id:
+            return 'Name and Album ID are required fields.'
+
+        # Create a new Song object
+        new_song = Song(
+            name=name,
+            lyrics=lyrics,
+            duration=duration,
+            album_id=album_id
+        )
+
+        # Add the new song to the database
+        db.session.add(new_song)
+        db.session.commit()
+
+        flash('Song created successfully')
+
+    # If it's a GET request, render the HTML form
+
+    if 'logged_in' not in session or session['role'] != 'creator':
+        flash('You are not authorized to view this page')
+        return redirect(url_for('login'))
+    
+    return render_template('creator.html')
 
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('login'))
+
+
+@app.route('/admin', methods=['GET', 'POST'])
+
+def admin():
+    if 'logged_in' not in session or session['role'] != 'admin':
+        flash('You are not authorized to view this page')
+        return redirect(url_for('login'))
+    return render_template('admin.html')
 
 @app.route('/onboarding', methods=['GET', 'POST'])
 def onboarding():
