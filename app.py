@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
 from model import db,User
 app=Flask(__name__)
+from flask import session
+app.secret_key = 'super secret key'
 app.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///User.sqlite"
 
 db.init_app(app)
@@ -19,7 +21,10 @@ def login():
         user = User.query.filter_by(username=username, password=password).first()
 
         if user:
-            return redirect(url_for('home'))
+            session['logged_in'] = True
+            session['username'] = username
+            return redirect(url_for('onboarding'))
+
         else:
             return render_template('login.html', error='Invalid username or password')
 
@@ -37,10 +42,27 @@ def signup():
         new_user = User(username=username, password=password)
         db.session.add(new_user)
         db.session.commit()
-
-        return redirect(url_for('login'))
+        
+        if(new_user):
+            session['logged_in'] = True
+            session['username'] = username
+            print("user created")
+            print(session)
+            return redirect(url_for('onboarding'))
 
     return render_template('signup.html', error=None)
+
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
+
+@app.route('/onboarding', methods=['GET', 'POST'])
+def onboarding():
+    if 'logged_in' not in session:
+        return redirect(url_for('login'))
+    return render_template('onboarding.html')
 
 if __name__ == '__main__':
     # Move db.create_all() inside the if block
