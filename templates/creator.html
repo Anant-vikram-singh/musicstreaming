@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Creator Dashboard</title>
+
+    <style>
+        /* Hide the form initially */
+        #createSongForm {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Music Creator Dashboard</h1>
+
+    <!-- Create New Song Button -->
+    <button id="showCreateSongForm">Create New Song</button>
+
+    <!-- Create New Song Form -->
+    <div id="createSongForm">
+        <h2>Create a New Song</h2>
+        <form action="/create_song" method="post">
+            <label for="song_name">Song Name:</label>
+            <input type="text" id="song_name" name="song_name" required>
+            <br>
+            <label for="lyrics">Lyrics:</label>
+            <textarea id="lyrics" name="lyrics" required></textarea>
+            <br>
+            <label for="duration">Duration:</label>
+            <input type="text" id="duration" name="duration" required>
+            <br>
+            <label for="album_id">Album ID:</label>
+            <input type="text" id="album_id" name="album_id" required>
+            <br>
+            <button type="submit">Create Song</button>
+        </form>
+    </div>
+
+   <!-- ... (previous HTML content) ... -->
+
+<script>
+    // JavaScript to toggle the visibility of the form
+    const createSongForm = document.getElementById('createSongForm');
+    const showCreateSongButton = document.getElementById('showCreateSongForm');
+
+    showCreateSongButton.addEventListener('click', function() {
+        // Toggle the visibility of the form
+        createSongForm.style.display = (createSongForm.style.display === 'none') ? 'block' : 'none';
+    });
+
+    // Listen for page navigation events (e.g., back button)
+    window.addEventListener('popstate', function(event) {
+        // Hide the form when navigating back
+        createSongForm.style.display = 'none';
+    });
+</script>
+</body>
+</html>
+
