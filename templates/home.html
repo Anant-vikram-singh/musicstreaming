@@ -27,8 +27,16 @@
           <strong>{{ song.name }}</strong>
           <p>{{ song.lyrics }}</p>
           <p>Duration: {{ song.duration }}</p>
-          <button onclick="addToPlaylist('{{ song }}')">+</button>
-          <button onclick="removeFromPlaylist('{{ song }}')">-</button>
+          <button
+            onclick="addToPlaylist({ 'song_id': song.id, 'isLoggedIn': isLoggedIn} | tojson | safe )"
+          >
+            +
+          </button>
+          <button
+            onclick="removeFromPlaylist({'song_id': song.id, 'isLoggedIn': isLoggedIn} | tojson | safe )"
+          >
+            -
+          </button>
         </li>
         {% endfor %}
       </ul>
@@ -62,8 +70,19 @@
         // Example: fetch('/get_songs').then(response => response.json()).then(data => { /* Render songs dynamically */ });
       });
 
-      function addToPlaylist(song) {
+      const checkUserLoggedIn = (isUserLoggedIn) => {
+        if (isUserLoggedIn) {
+          console.log("User is logged in");
+        } else {
+          alert("User is not logged in");
+        }
+      };
+
+      function addToPlaylist(data) {
+        var songId = data.song_id;
+        var isLoggedIn = data.isLoggedIn;
         const li = document.createElement("li");
+        const btn = document.createElement("button");
         console.log(song);
         li.textContent = song.name;
         playlist.appendChild(li);

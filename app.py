@@ -11,7 +11,9 @@ app.app_context().push()
 @app.route('/')
 def home():
     songs = Song.query.all()  # Retrieve all songs from the database
-    return render_template('home.html', songs = songs)
+    isLoggedIn = 'logged_in' in session
+    
+    return render_template('home.html', isLoggedIn = isLoggedIn, songs = songs)
 
 @app.route('/save_playlist', methods=['POST'])
 def save_playlist():
@@ -110,6 +112,19 @@ def admin():
         flash('You are not authorized to view this page')
         return redirect(url_for('login'))
     return render_template('admin.html')
+
+@app.route('/upgrade', methods=['GET', 'POST'])
+def upgrade():
+    if 'username' in session:
+        if request.method == 'POST':
+            current_user = User.query.filter_by(username=session['username']).first()
+            current_user.role = 'creator'
+            db.session.commit()
+            return redirect(url_for('home'))
+        return render_template('upgrade.html')
+    else:
+        return redirect(url_for('login'))
+
 
 @app.route('/onboarding', methods=['GET', 'POST'])
 def onboarding():
