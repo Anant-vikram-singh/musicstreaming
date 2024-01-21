@@ -21,6 +21,10 @@
 
     <div>
       <h1>List of Songs</h1>
+
+      <p>{{songs}}</p>
+      <p>{{isLoggedIn}}</p>
+
       <ul id="songList">
         {% for song in songs %}
         <li>
@@ -28,12 +32,12 @@
           <p>{{ song.lyrics }}</p>
           <p>Duration: {{ song.duration }}</p>
           <button
-            onclick="addToPlaylist({ 'song_id': song.id, 'isLoggedIn': isLoggedIn} | tojson | safe )"
+            onclick="addToPlaylist({ song_id: '{{song.id}}', isLoggedIn : '{{isLoggedIn}}'})"
           >
             +
           </button>
           <button
-            onclick="removeFromPlaylist({'song_id': song.id, 'isLoggedIn': isLoggedIn} | tojson | safe )"
+            onclick="removeFromPlaylist({song_id: '{{song.id}}', isLoggedIn : '{{isLoggedIn}}'})"
           >
             -
           </button>
@@ -81,12 +85,7 @@
       function addToPlaylist(data) {
         var songId = data.song_id;
         var isLoggedIn = data.isLoggedIn;
-        const li = document.createElement("li");
-        const btn = document.createElement("button");
-        console.log(song);
-        li.textContent = song.name;
-        playlist.appendChild(li);
-        selectedSongs.push(song);
+        console.log(data);
       }
 
       // Function to remove a song from the playlist
