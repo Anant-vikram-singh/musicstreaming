@@ -61,7 +61,7 @@
       const savePlaylistButton = document.getElementById("savePlaylist");
 
       // Keep track of selected songs
-      const selectedSongs = [];
+      let selectedSongs = [];
 
       // Event listener for saving the playlist
       savePlaylistButton.addEventListener("click", function () {
@@ -82,19 +82,51 @@
         }
       };
 
+      const updateSongDOM = () => {
+        const songList = document.getElementById("playlist");
+        songList.innerHTML = "";
+        selectedSongs.forEach((song) => {
+          const li = document.createElement("li");
+          li.appendChild(document.createTextNode(song.id));
+          songList.appendChild(li);
+        });
+      };
+
       function addToPlaylist(data) {
-        var songId = data.song_id;
-        var isLoggedIn = data.isLoggedIn;
-        console.log(data);
+        const songId = data.song_id;
+        const isLoggedIn = data.isLoggedIn;
+        console.log(songId, isLoggedIn);
+        console.log(typeof isLoggedIn);
+        const isLoggedInBool = isLoggedIn === "True";
+        console.log(isLoggedInBool);
+        if (!isLoggedInBool) {
+          // check if already added
+          const isAlreadyAdded = selectedSongs.find((song) => {
+            return song.id === songId;
+          });
+          if (isAlreadyAdded) {
+            alert("Song is already added");
+            return;
+          }
+          selectedSongs.push({ id: songId });
+          console.log(selectedSongs);
+          updateSongDOM();
+        } else {
+          alert("User is not logged in");
+        }
       }
 
       // Function to remove a song from the playlist
-      function removeFromPlaylist(song) {
-        const index = selectedSongs.indexOf(song);
-        if (index !== -1) {
-          selectedSongs.splice(index, 1);
-          playlist.removeChild(playlist.childNodes[index]);
-        }
+
+      function removeFromPlaylist(data) {
+        const songId = data.song_id;
+        const isLoggedIn = data.isLoggedIn;
+        const updatedSongs = selectedSongs.filter((song) => {
+          return song.id !== songId;
+        });
+        console.log(updatedSongs);
+        selectedSongs = updatedSongs;
+        updateSongDOM();
       }
     </script>
   </body>
