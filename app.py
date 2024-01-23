@@ -1,7 +1,8 @@
 from flask import Flask, flash, render_template, request, redirect, url_for,flash
-from model import db,User,Song
+from model import db,User,Song, Playlist
 app=Flask(__name__)
 from flask import session
+import json
 app.secret_key = 'super secret key'
 app.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///User.sqlite"
 
@@ -10,17 +11,27 @@ app.app_context().push()
 
 @app.route('/')
 def home():
-    songs = Song.query.all()  # Retrieve all songs from the database
+    songs = [song.as_dict() for song in Song.query.all()]  # Convert each song to a dictionary
     isLoggedIn = 'logged_in' in session
-    
-    return render_template('home.html', isLoggedIn = isLoggedIn, songs = songs)
+    songs_json = json.dumps(songs)  # Serialize the list of song dictionaries to a JSON string
+    print(songs_json)
+    return render_template('home.html', isLoggedIn=isLoggedIn, songs_json=songs_json, songs = songs)
 
 @app.route('/save_playlist', methods=['POST'])
 def save_playlist():
-    selected_songs = request.json  # Assuming data is sent as JSON
-    # Process and save the playlist data as needed
-    print(selected_songs)  # For demonstration purposes
-    return 'Playlist saved successfully'
+    selected_songs = request.json  # Get the selected songs from the request
+    print('selected_songs', selected_songs)
+    # save the selected songs to the database as a playlist
+    
+    selected_songs_id = [song['id'] for song in selected_songs]
+    print('selected_songs_id', selected_songs_id)
+    songs = Song.query.filter(Song.id.in_(selected_songs_id)).all()
+    print('songs', songs)
+    playlist = Playlist(name='My Playlist', songs=songs, user_id=1)
+    db.session.add(playlist)
+    db.session.commit()
+    # return a json response
+    return {'success': True}
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -65,6 +76,11 @@ def signup():
             return redirect(url_for('onboarding'))
 
     return render_template('signup.html', error=None)
+
+@app.route('/playlist', methods=['GET'])
+def playlist():
+    playlists = Playlist.query.all()
+    return render_template('playlist.html', playlists=playlists)
 
 @app.route('/creator', methods=['GET', 'POST'])
 def creator():

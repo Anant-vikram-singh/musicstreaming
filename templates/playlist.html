@@ -20,27 +20,45 @@
     </div>
 
     <div>
-      <h1>List of Songs</h1>
+      <h1>List of Playlists</h1>
 
-      <p>{{songs}}</p>
-      <p>{{isLoggedIn}}</p>
+      <p>{{playlists}}</p>
+      <div class="playlistContainer">
+        {% for playlist in playlists %}
+        <div class="playlistDesc">
+          <h2>{{playlist.name}}</h2>
+          <!-- <p>{{playlist.description}}</p> -->
+          <p>{{playlist.user_id}}</p>
+          <a href="/playlist/{{playlist.id}}"> {{playlist.name}} </a>
+        </div>
+        <div class="playlistSongs">
+          {% for song in playlist.songs %}
+          <p>{{song.name}}</p>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+      <!-- <p>{{isLoggedIn}}</p> -->
 
-      <ul id="songList">
-        {% for song in songs %}
-        <p>{{song}}</p>
+      <!-- <ul id="songList">
+        {% for song in playlist %}
         <li>
           <strong>{{ song.name }}</strong>
           <p>{{ song.lyrics }}</p>
           <p>Duration: {{ song.duration }}</p>
-          <button data-action="add" data-song-id="{{ song.id }}">+</button>
-          <button data-action="remove" data-song-id="{{ song.id }}">-</button>
+          <button
+            onclick="playSong({ song_id: '{{song.id}}', isLoggedIn : '{{isLoggedIn}}'})"
+          >
+            Play
+          </button>
+          <a href="/playlist/{{song.id}}"> {{song.name}} </a>
         </li>
         {% endfor %}
-      </ul>
+      </ul> -->
     </div>
 
     <div>
-      <button id="savePlaylist">Save Playlist</button>
+      <!-- <button id="savePlaylist">Save Playlist</button> -->
 
       <h2>Your Playlist:</h2>
       <ul id="playlist">
@@ -48,7 +66,7 @@
       </ul>
     </div>
 
-    <script>
+    <!-- <script>
       const songList = document.getElementById("songList");
       const playlist = document.getElementById("playlist");
       const savePlaylistButton = document.getElementById("savePlaylist");
@@ -61,61 +79,11 @@
         // Send selectedSongs to the server using an AJAX request
         // You can use fetch() or an AJAX library like Axios
         // Example: fetch('/save_playlist', { method: 'POST', body: JSON.stringify(selectedSongs) })
-        console.log(selectedSongs);
-        // For demonstration purposes
+        console.log(selectedSongs); // For demonstration purposes
 
         // You should populate the songList dynamically from your server data
         // Example: fetch('/get_songs').then(response => response.json()).then(data => { /* Render songs dynamically */ });
-
-        // push the songs with the id belonging to the selectedSongs
-
-        // make a post request to the add_playlist endpoint
-
-        fetch("/save_playlist", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(selectedSongs),
-        })
-          .then((res) => {
-            if (res.ok) {
-              return res.json();
-            } else {
-              throw new Error("Something went wrong");
-            }
-          })
-          .then((data) => {
-            console.log(data);
-          })
-          .catch((error) => {
-            console.error(
-              "There was a problem with the fetch operation:",
-              error
-            );
-          });
       });
-
-      document
-        .querySelectorAll('button[data-action="add"]')
-        .forEach((button) => {
-          button.addEventListener("click", function () {
-            const songId = this.getAttribute("data-song-id");
-            addToPlaylist({ song_id: songId, isLoggedIn: "{{ isLoggedIn }}" });
-          });
-        });
-
-      document
-        .querySelectorAll('button[data-action="remove"]')
-        .forEach((button) => {
-          button.addEventListener("click", function () {
-            const songId = this.getAttribute("data-song-id");
-            removeFromPlaylist({
-              song_id: songId,
-              isLoggedIn: "{{ isLoggedIn }}",
-            });
-          });
-        });
 
       const checkUserLoggedIn = (isUserLoggedIn) => {
         if (isUserLoggedIn) {
@@ -135,7 +103,7 @@
         });
       };
 
-      const addToPlaylist = (data) => {
+      function playSong(data) {
         const songId = data.song_id;
         const isLoggedIn = data.isLoggedIn;
         console.log(songId, isLoggedIn);
@@ -157,20 +125,9 @@
         } else {
           alert("User is not logged in");
         }
-      };
+      }
 
       // Function to remove a song from the playlist
-
-      const removeFromPlaylist = (data) => {
-        const songId = data.song_id;
-        const isLoggedIn = data.isLoggedIn;
-        const updatedSongs = selectedSongs.filter((song) => {
-          return song.id !== songId;
-        });
-        console.log(updatedSongs);
-        selectedSongs = updatedSongs;
-        updateSongDOM();
-      };
-    </script>
+    </script> -->
   </body>
 </html>

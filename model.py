@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 db=SQLAlchemy()
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -33,6 +34,12 @@ class Song(db.Model):
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
     album_id = db.Column(db.Integer, db.ForeignKey('album.id'), nullable=False)
     ratings = db.relationship('Rating', backref='song', lazy=True)
+    
+    def as_dict(self):
+        return {
+            c.name: (getattr(self, c.name).isoformat() if isinstance(getattr(self, c.name), datetime) else getattr(self, c.name))
+            for c in self.__table__.columns
+        }
 
 class Rating(db.Model):
     id = db.Column(db.Integer, primary_key=True)
