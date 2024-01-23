@@ -27,7 +27,6 @@
         {% for playlist in playlists %}
         <div class="playlistDesc">
           <h2>{{playlist.name}}</h2>
-          <!-- <p>{{playlist.description}}</p> -->
           <p>{{playlist.user_id}}</p>
           <a href="/playlist/{{playlist.id}}"> {{playlist.name}} </a>
         </div>
@@ -38,96 +37,10 @@
         </div>
         {% endfor %}
       </div>
-      <!-- <p>{{isLoggedIn}}</p> -->
-
-      <!-- <ul id="songList">
-        {% for song in playlist %}
-        <li>
-          <strong>{{ song.name }}</strong>
-          <p>{{ song.lyrics }}</p>
-          <p>Duration: {{ song.duration }}</p>
-          <button
-            onclick="playSong({ song_id: '{{song.id}}', isLoggedIn : '{{isLoggedIn}}'})"
-          >
-            Play
-          </button>
-          <a href="/playlist/{{song.id}}"> {{song.name}} </a>
-        </li>
-        {% endfor %}
-      </ul> -->
     </div>
 
-    <div>
-      <!-- <button id="savePlaylist">Save Playlist</button> -->
+    <div></div>
 
-      <h2>Your Playlist:</h2>
-      <ul id="playlist">
-        <!-- Render the selected songs here -->
-      </ul>
-    </div>
-
-    <!-- <script>
-      const songList = document.getElementById("songList");
-      const playlist = document.getElementById("playlist");
-      const savePlaylistButton = document.getElementById("savePlaylist");
-
-      // Keep track of selected songs
-      let selectedSongs = [];
-
-      // Event listener for saving the playlist
-      savePlaylistButton.addEventListener("click", function () {
-        // Send selectedSongs to the server using an AJAX request
-        // You can use fetch() or an AJAX library like Axios
-        // Example: fetch('/save_playlist', { method: 'POST', body: JSON.stringify(selectedSongs) })
-        console.log(selectedSongs); // For demonstration purposes
-
-        // You should populate the songList dynamically from your server data
-        // Example: fetch('/get_songs').then(response => response.json()).then(data => { /* Render songs dynamically */ });
-      });
-
-      const checkUserLoggedIn = (isUserLoggedIn) => {
-        if (isUserLoggedIn) {
-          console.log("User is logged in");
-        } else {
-          alert("User is not logged in");
-        }
-      };
-
-      const updateSongDOM = () => {
-        const songList = document.getElementById("playlist");
-        songList.innerHTML = "";
-        selectedSongs.forEach((song) => {
-          const li = document.createElement("li");
-          li.appendChild(document.createTextNode(song.id));
-          songList.appendChild(li);
-        });
-      };
-
-      function playSong(data) {
-        const songId = data.song_id;
-        const isLoggedIn = data.isLoggedIn;
-        console.log(songId, isLoggedIn);
-        console.log(typeof isLoggedIn);
-        const isLoggedInBool = isLoggedIn === "True";
-        console.log(isLoggedInBool);
-        if (!isLoggedInBool) {
-          // check if already added
-          const isAlreadyAdded = selectedSongs.find((song) => {
-            return song.id === songId;
-          });
-          if (isAlreadyAdded) {
-            alert("Song is already added");
-            return;
-          }
-          selectedSongs.push({ id: songId });
-          console.log(selectedSongs);
-          updateSongDOM();
-        } else {
-          alert("User is not logged in");
-        }
-      }
-
-      // Function to remove a song from the playlist
-    </script> -->
+    <script></script>
   </body>
 </html>
