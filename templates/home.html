@@ -142,7 +142,7 @@
         console.log(typeof isLoggedIn);
         const isLoggedInBool = isLoggedIn === "True";
         console.log(isLoggedInBool);
-        if (!isLoggedInBool) {
+        if (isLoggedInBool) {
           // check if already added
           const isAlreadyAdded = selectedSongs.find((song) => {
             return song.id === songId;

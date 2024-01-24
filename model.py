@@ -6,6 +6,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
     user_type = db.Column(db.String(20), nullable=False, default='normal')  # Added user_type column
+    banned = db.Column(db.Boolean, nullable=False, default=False)
 
 class Playlist(db.Model):
     id = db.Column(db.Integer, primary_key=True)

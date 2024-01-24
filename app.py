@@ -82,6 +82,13 @@ def playlist():
     playlists = Playlist.query.all()
     return render_template('playlist.html', playlists=playlists)
 
+@app.route('/createdummyadmin', methods=['GET'])
+def createdummyadmin():
+    new_user = User(username='admin', password='admin', user_type='admin')  # Pass user_type to the User model
+    db.session.add(new_user)
+    db.session.commit()
+    return 'admin created'
+
 @app.route('/creator', methods=['GET', 'POST'])
 def creator():
     if request.method == 'POST':
@@ -122,12 +129,26 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
+@app.route('/save-user-status', methods=['POST'])
+def save_user_status():
+    if 'logged_in' not in session:
+        return redirect(url_for('login'))
+    
+    usermap = request.json
+    
+    print(usermap)
+    return 'updated users'
+
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if 'logged_in' not in session or session['role'] != 'admin':
         flash('You are not authorized to view this page')
         return redirect(url_for('login'))
-    return render_template('admin.html')
+
+    users = User.query.all()
+    songs = Song.query.all()
+    playlists = Playlist.query.all()
+    return render_template('admin.html', users=users, songs=songs, playlists=playlists)
 
 @app.route('/upgrade', methods=['GET', 'POST'])
 def upgrade():
@@ -146,6 +167,7 @@ def upgrade():
 def onboarding():
     if 'logged_in' not in session:
         return redirect(url_for('login'))
+    
     return render_template('onboarding.html')
 
 if __name__ == '__main__':

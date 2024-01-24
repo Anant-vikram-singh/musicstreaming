@@ -14,7 +14,115 @@
       onclick="return confirm('Are you sure you want to logout?');"
       >Logout</a
     >
-
     {% endif %}
+
+    <div>
+      <h1>Admin</h1>
+      <p>Only logged in admins can see this page.</p>
+    </div>
+
+    <div>
+      <!-- iterate over songs and display -->
+
+      {% for song in songs %}
+
+      <p>{{ song.name }}</p>
+      <p>{{ song.lyrics }}</p>
+      <p>{{ song.duration }}</p>
+
+      {% endfor %}
+    </div>
+
+    <!-- iterate over playlists -->
+
+    <div>
+      {% for playlist in playlists %}
+
+      <p>{{ playlist.name }}</p>
+
+      <div>
+        {% for song in playlist.songs %}
+        <p>{{ song.name }}</p>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- iterate over the users and give a ban user button, followed by save changes button to request to the server -->
+
+    <div>
+      {% for user in users %}
+
+      <p>{{ user.username }}</p>
+      <p>{{ user.user_type }}</p>
+      <p>{{ user.banned }}</p>
+
+      {% if user.banned == False %}
+      <button data-action="ban" data-user-id="{{user.id}}">Ban</button>
+      {% else %}
+
+      <button data-action="unban" data-user-id="{{user.id}}">unBan</button>
+      {% endif %} {% endfor %}
+    </div>
+
+    <div id="saveUserStatus">Save</div>
+
+    <script>
+      const banButtons = document.querySelectorAll("[data-action='ban']");
+      const unbanButtons = document.querySelectorAll("[data-action='unban']");
+
+      const userStatus = new Map();
+
+      function toggleBanStatus(userId, button) {
+        // Check current status and toggle
+        const isBanned = userStatus.get(userId) === 0;
+        userStatus.set(userId, isBanned ? 1 : 0);
+
+        // Toggle the presence of a tick at the end of the button
+        if (button.innerHTML.includes("✓")) {
+          button.innerHTML = button.innerHTML.replace(" ✓", "");
+        } else {
+          button.innerHTML += " ✓";
+        }
+      }
+
+      banButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+          const userId = this.getAttribute("data-user-id");
+          console.log(userId);
+          toggleBanStatus(userId, this);
+        });
+      });
+
+      unbanButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+          const userId = this.getAttribute("data-user-id");
+          toggleBanStatus(userId, this);
+        });
+      });
+
+      const saveUserStatus = document.getElementById("saveUserStatus");
+
+      saveUserStatus.addEventListener("click", function () {
+        console.log(userStatus);
+
+        // convert to an array of objects
+
+        const arrayOfObjects = Array.from(userStatus, ([key, value]) => ({
+          key,
+          value,
+        }));
+
+        console.log(arrayOfObjects);
+
+        fetch("save-user-status", {
+          method: "POST",
+          body: JSON.stringify(arrayOfObjects),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      });
+    </script>
   </body>
 </html>
