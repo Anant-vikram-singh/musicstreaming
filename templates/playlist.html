@@ -5,24 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <style>
-      body {
-        background-color: blue;
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      .nav-wrapper {
+        padding: 1rem 0.5rem;
+        background-color: #222;
+        color: whitesmoke;
+      }
+      .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .btn-container {
+        display: flex;
+        gap: 0.75rem;
+      }
+      .btn-container button {
+        background-color: #4caf50;
+        color: #fff;
+        text-transform: capitalize;
+        font-size: large;
+        border: none;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+      }
+      .btn-container button:hover {
+        background-color: #45a049;
+      }
+      .playlist-section {
+        padding: 1rem 0.5rem;
       }
     </style>
   </head>
 
   <body>
-    <h1>MUSIC STREAMING APP</h1>
-    <div class="btn-container">
-      <a href="/login"><button type="button" class="btn">login</button></a>
-      <a href="/signup"><button type="button" class="btn">signup</button></a>
-      <a href="/admin"><button type="button" class="btn">admin</button></a>
+    <div class="nav-wrapper">
+      <nav class="navbar">
+        <h1>MUSIC STREAMING APP</h1>
+        <div class="btn-container">
+          <a href="/login"><button type="button" class="btn">login</button></a>
+          <a href="/signup"
+            ><button type="button" class="btn">signup</button></a
+          >
+          <a href="/admin"><button type="button" class="btn">admin</button></a>
+        </div>
+      </nav>
     </div>
 
-    <div>
+    <section class="playlist-section">
       <h1>List of Playlists</h1>
 
-      <p>{{playlists}}</p>
+      <!-- <p>{{playlists}}</p> -->
       <div class="playlistContainer">
         {% for playlist in playlists %}
         <div class="playlistDesc">
@@ -37,7 +75,7 @@
         </div>
         {% endfor %}
       </div>
-    </div>
+    </section>
 
     <div></div>
 

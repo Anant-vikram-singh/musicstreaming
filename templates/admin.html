@@ -4,68 +4,182 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      .nav-wrapper {
+        padding: 1rem 0.5rem;
+        background-color: #222;
+        color: whitesmoke;
+      }
+      .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .btn-container {
+        display: flex;
+        gap: 0.75rem;
+      }
+      .btn-container button {
+        background-color: #4caf50;
+        color: #fff;
+        text-transform: capitalize;
+        font-size: large;
+        border: none;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+      }
+      .btn-container button:hover {
+        background-color: #45a049;
+      }
+      .main {
+        padding-inline: 0.5rem;
+      }
+      button {
+        background-color: #4caf50;
+        color: #fff;
+        text-transform: capitalize;
+        font-size: large;
+        border: none;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      .song-section {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-block: 1rem;
+      }
+      .song {
+        display: flex;
+        gap: 1rem;
+      }
+      .playlist-section {
+        display: flex;
+        margin-block: 1rem;
+      }
+      .user-section {
+        display: flex;
+        gap: 1rem;
+        margin-block: 1rem;
+      }
+      .user {
+        background-color: rgba(128, 128, 128, 0.434);
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        width: 200px;
+      }
+      .ban-btn {
+        background-color: red;
+        margin-top: 0.5rem;
+        padding-block: 0.25rem;
+        width: 100px;
+      }
+      .ban-btn:hover {
+        background-color: rgba(255, 0, 0, 0.707);
+      }
+    </style>
   </head>
   <body>
-    {% if session.logged_in %}
-    <p>Welcome, {{ session.username }}!</p>
-    {% endif %} {% if session.logged_in %}
-    <a
-      href="{{ url_for('logout') }}"
-      onclick="return confirm('Are you sure you want to logout?');"
-      >Logout</a
-    >
-    {% endif %}
-
-    <div>
-      <h1>Admin</h1>
-      <p>Only logged in admins can see this page.</p>
+    <div class="nav-wrapper">
+      <nav class="navbar">
+        <h1>MUSIC STREAMING APP</h1>
+        <div class="btn-container">
+          <a href="/login"><button type="button" class="btn">login</button></a>
+          <a href="/signup"
+            ><button type="button" class="btn">signup</button></a
+          >
+          <a href="/admin"><button type="button" class="btn">admin</button></a>
+        </div>
+      </nav>
     </div>
 
-    <div>
-      <!-- iterate over songs and display -->
-
-      {% for song in songs %}
-
-      <p>{{ song.name }}</p>
-      <p>{{ song.lyrics }}</p>
-      <p>{{ song.duration }}</p>
-
-      {% endfor %}
-    </div>
-
-    <!-- iterate over playlists -->
-
-    <div>
-      {% for playlist in playlists %}
-
-      <p>{{ playlist.name }}</p>
+    <main class="main">
+      {% if session.logged_in %}
+      <p>Welcome, {{ session.username }}!</p>
+      {% endif %} {% if session.logged_in %}
+      <a
+        href="{{ url_for('logout') }}"
+        onclick="return confirm('Are you sure you want to logout?');"
+        >Logout</a
+      >
+      {% endif %}
 
       <div>
-        {% for song in playlist.songs %}
-        <p>{{ song.name }}</p>
-        {% endfor %}
+        <h1>Admin</h1>
+        <p>Only logged in admins can see this page.</p>
       </div>
-      {% endfor %}
-    </div>
 
-    <!-- iterate over the users and give a ban user button, followed by save changes button to request to the server -->
+      <section class="song-section">
+        <!-- iterate over songs and display -->
+        {% for song in songs %}
+        <div class="song">
+          <p>{{ song.name }}</p>
+          <p>{{ song.lyrics }}</p>
+          <p>{{ song.duration }}</p>
+        </div>
+        <div class="song">
+          <p>{{ song.name }}</p>
+          <p>{{ song.lyrics }}</p>
+          <p>{{ song.duration }}</p>
+        </div>
+        <div class="song">
+          <p>{{ song.name }}</p>
+          <p>{{ song.lyrics }}</p>
+          <p>{{ song.duration }}</p>
+        </div>
+        {% endfor %}
+      </section>
 
-    <div>
-      {% for user in users %}
+      <!-- iterate over playlists -->
 
-      <p>{{ user.username }}</p>
-      <p>{{ user.user_type }}</p>
-      <p>{{ user.banned }}</p>
+      <section class="playlist-section">
+        {% for playlist in playlists %}
+        <div class="playlist">
+          <p>{{ playlist.name }}</p>
 
-      {% if user.banned == False %}
-      <button data-action="ban" data-user-id="{{user.id}}">Ban</button>
-      {% else %}
+          <div class="">
+            {% for song in playlist.songs %}
+            <p>{{ song.name }}</p>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </section>
 
-      <button data-action="unban" data-user-id="{{user.id}}">unBan</button>
-      {% endif %} {% endfor %}
-    </div>
+      <!-- iterate over the users and give a ban user button, followed by save changes button to request to the server -->
 
-    <div id="saveUserStatus">Save</div>
+      <section class="user-section">
+        {% for user in users %}
+        <div class="user">
+          <p>{{ user.username }}</p>
+          <p>{{ user.user_type }}</p>
+          <p>{{ user.banned }}</p>
+
+          {% if user.banned == False %}
+          <button class="ban-btn" data-action="ban" data-user-id="{{user.id}}">
+            Ban
+          </button>
+          {% else %}
+
+          <button data-action="unban" data-user-id="{{user.id}}">unBan</button>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </section>
+
+      <button class="save-Btn" id="saveUserStatus">Save</button>
+    </main>
 
     <script>
       const banButtons = document.querySelectorAll("[data-action='ban']");

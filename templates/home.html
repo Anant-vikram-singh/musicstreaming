@@ -5,48 +5,130 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <style>
-      body {
-        background-color: blue;
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      .nav-wrapper {
+        padding: 1rem 0.5rem;
+        background-color: #222;
+        color: whitesmoke;
+      }
+      .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .btn-container {
+        display: flex;
+        gap: 0.75rem;
+      }
+      .btn-container button {
+        background-color: #4caf50;
+        color: #fff;
+        text-transform: capitalize;
+        font-size: large;
+        border: none;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+      }
+      .btn-container button:hover {
+        background-color: #45a049;
+      }
+      .song-section {
+        padding: 1rem 0.5rem;
+      }
+      .songList {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .song {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        height: 100%;
+        background-color: rgba(128, 128, 128, 0.573);
+        width: max-content;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+      }
+      .addBtn,
+      .removeBtn {
+        display: grid;
+        place-content: center;
+        font-size: 1.5rem;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+      }
+      .playlist-section {
+        padding: 1rem 0.5rem;
+      }
+      .savePlaylist {
+        border: none;
+        padding: 0.5rem 1rem;
+        background-color: #222;
+        color: white;
+        border-radius: 0.5rem;
+        font-size: large;
       }
     </style>
   </head>
 
   <body>
-    <h1>MUSIC STREAMING APP</h1>
-    <div class="btn-container">
-      <a href="/login"><button type="button" class="btn">login</button></a>
-      <a href="/signup"><button type="button" class="btn">signup</button></a>
-      <a href="/admin"><button type="button" class="btn">admin</button></a>
+    <div class="nav-wrapper">
+      <nav class="navbar">
+        <h1>MUSIC STREAMING APP</h1>
+        <div class="btn-container">
+          <a href="/login"><button type="button" class="btn">login</button></a>
+          <a href="/signup"
+            ><button type="button" class="btn">signup</button></a
+          >
+          <a href="/admin"><button type="button" class="btn">admin</button></a>
+        </div>
+      </nav>
     </div>
 
-    <div>
+    <section class="song-section">
       <h1>List of Songs</h1>
 
-      <p>{{songs}}</p>
-      <p>{{isLoggedIn}}</p>
+      <!-- <p>{{songs}}</p> -->
+      <!-- <p>{{isLoggedIn}}</p> -->
 
-      <ul id="songList">
+      <ul id="songList" class="songList">
         {% for song in songs %}
-        <p>{{song}}</p>
-        <li>
+        <li class="song">
+          <!-- <p>{{song}}</p> -->
           <strong>{{ song.name }}</strong>
           <p>{{ song.lyrics }}</p>
           <p>Duration: {{ song.duration }}</p>
-          <button data-action="add" data-song-id="{{ song.id }}">+</button>
-          <button data-action="remove" data-song-id="{{ song.id }}">-</button>
+          <button class="addBtn" data-action="add" data-song-id="{{ song.id }}">
+            +
+          </button>
+          <button
+            class="removeBtn"
+            data-action="remove"
+            data-song-id="{{ song.id }}"
+          >
+            -
+          </button>
         </li>
         {% endfor %}
       </ul>
-    </div>
+    </section>
 
-    <div>
-      <button id="savePlaylist">Save Playlist</button>
-
+    <section class="playlist-section">
       <h2>Your Playlist:</h2>
       <ul id="playlist">
         <!-- Render the selected songs here -->
       </ul>
-    </div>
+      <button id="savePlaylist" class="savePlaylist">Save Playlist</button>
+    </section>
 
     <script>
       const songList = document.getElementById("songList");
