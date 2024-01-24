@@ -136,15 +136,24 @@ def save_user_status():
     
     usermap = request.json
     
+    userMap = usermap.get('userMap')
+    returnURL = usermap.get('returnURL')
+    
     # iterate the map here and set the banned flag to the corresponding users
 
-    for us in usermap:
+    for us in userMap:
         user_id = us.get('key')
         status = us.get('value')
         print(user_id, status)
-    
-    
-    return 'updated users'
+        
+        user = User.query.filter_by(id=user_id).first()
+
+        if user: 
+            user.banned = (status == 0)  # Assuming 'banned' is a boolean field in your User model
+            db.session.add(user)
+
+    db.session.commit()
+    return redirect(returnURL or url_for('admin'))
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
