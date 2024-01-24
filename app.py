@@ -136,7 +136,14 @@ def save_user_status():
     
     usermap = request.json
     
-    print(usermap)
+    # iterate the map here and set the banned flag to the corresponding users
+
+    for us in usermap:
+        user_id = us.get('key')
+        status = us.get('value')
+        print(user_id, status)
+    
+    
     return 'updated users'
 
 @app.route('/admin', methods=['GET', 'POST'])
