@@ -186,6 +186,16 @@
       const unbanButtons = document.querySelectorAll("[data-action='unban']");
 
       const userStatus = new Map();
+      const allButtons = document.querySelectorAll("button[data-action]");
+
+      allButtons.forEach((button) => {
+        const userId = button.getAttribute("data-user-id");
+        const isBanned =
+          button.getAttribute("data-initial-banned-status") === "True"; // or however your template renders boolean values
+        userStatus.set(userId, isBanned ? 0 : 1); // Assuming 1 for banned, 0 for not banned
+      });
+
+      console.log(userStatus);
 
       function toggleBanStatus(userId, button) {
         // Check current status and toggle
@@ -231,7 +241,10 @@
 
         fetch("save-user-status", {
           method: "POST",
-          body: JSON.stringify(arrayOfObjects),
+          body: JSON.stringify({
+            userMap: arrayOfObjects,
+            returnURL: window.location.pathname,
+          }),
           headers: {
             "Content-Type": "application/json",
           },

@@ -1,5 +1,5 @@
 from flask import Flask, flash, render_template, request, redirect, url_for,flash
-from model import db,User,Song, Playlist
+from model import db,User,Song, Playlist, Rating, Album
 app=Flask(__name__)
 from flask import session
 import json
@@ -41,11 +41,14 @@ def login():
         user_type = request.form['loginType']  # Add this line to get the user type from the form
 
         user = User.query.filter_by(username=username, password=password, user_type=user_type).first()
+        uid = user.id
 
         if user:
             session['logged_in'] = True
             session['username'] = username
             session['role'] = user_type
+            session['uid'] = uid
+            
             return redirect(url_for('onboarding'))
 
         else:
@@ -67,10 +70,13 @@ def signup():
         db.session.add(new_user)
         db.session.commit()
         
+        print(new_user)
+        
         if(new_user):
             session['logged_in'] = True
             session['username'] = username
             session['role'] = user_type
+            session['uid'] = new_user.id
             print("user created")
             print(session)
             return redirect(url_for('onboarding'))
@@ -89,6 +95,19 @@ def createdummyadmin():
     db.session.commit()
     return 'admin created'
 
+@app.route('/dangerous-cleardb', methods=['GET'])
+def dangerous_delete_all():
+    if 'logged_in' not in session or session['role'] != 'admin':
+        # Ensure that only an admin or authorized user can perform this operation
+        return redirect(url_for('login'))
+
+    # Iterate over all tables and delete all rows
+    for table in reversed(db.metadata.sorted_tables):
+        db.session.execute(table.delete())
+    db.session.commit()
+
+    return 'All data deleted'
+
 @app.route('/creator', methods=['GET', 'POST'])
 def creator():
     if request.method == 'POST':
@@ -96,10 +115,9 @@ def creator():
         name = request.form.get('name')
         lyrics = request.form.get('lyrics')
         duration = request.form.get('duration')
-        album_id = request.form.get('album_id')
-
+        
         # Perform validation (e.g., check if required fields are provided)
-        if not name or not album_id:
+        if not name:
             return 'Name and Album ID are required fields.'
 
         # Create a new Song object
@@ -107,7 +125,7 @@ def creator():
             name=name,
             lyrics=lyrics,
             duration=duration,
-            album_id=album_id
+            created_by_id = session['uid']
         )
 
         # Add the new song to the database
@@ -122,7 +140,38 @@ def creator():
         flash('You are not authorized to view this page')
         return redirect(url_for('login'))
     
-    return render_template('creator.html')
+    creatorSongs = Song.query.filter_by(created_by_id = session['uid'])
+
+    return render_template('creator.html', creatorSongs = creatorSongs)
+
+@app.route('/albumn', methods = ['GET', 'POST'])
+def album():
+    if request.method == 'POST':
+        
+        songlist = request.json
+        
+        pylist = []
+        
+        for song in songlist:
+            song_id = int(song)
+            pylist.append(Song.query.filter_by(id = song_id).first())
+        
+        print(pylist)
+        
+        new_albumn = Album(name = 'Albumn1',songs = pylist)
+
+        print(new_albumn.songs)
+            
+        db.session.add(new_albumn)
+        db.session.commit()
+        
+        return ''
+    
+    if request.method == 'GET':
+        albumns = Album.query.all()
+        for album in albumns:
+            print(album.songs)
+        return render_template('albumn.html',albumns = albumns)
 
 @app.route('/logout')
 def logout():
@@ -136,15 +185,24 @@ def save_user_status():
     
     usermap = request.json
     
+    userMap = usermap.get('userMap')
+    returnURL = usermap.get('returnURL')
+    
     # iterate the map here and set the banned flag to the corresponding users
 
-    for us in usermap:
+    for us in userMap:
         user_id = us.get('key')
         status = us.get('value')
         print(user_id, status)
-    
-    
-    return 'updated users'
+        
+        user = User.query.filter_by(id=user_id).first()
+
+        if user: 
+            user.banned = (status == 0)  # Assuming 'banned' is a boolean field in your User model
+            db.session.add(user)
+
+    db.session.commit()
+    return redirect(returnURL or url_for('admin'))
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
