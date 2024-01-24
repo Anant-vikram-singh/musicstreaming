@@ -5,7 +5,7 @@ from flask import session
 import json
 app.secret_key = 'super secret key'
 app.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///User.sqlite"
-
+ 
 db.init_app(app)
 app.app_context().push()
 

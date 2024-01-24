@@ -83,13 +83,15 @@
   <body>
     <div class="nav-wrapper">
       <nav class="navbar">
-        <h1>MUSIC STREAMING APP</h1>
+        <a href="/">MUSIC STREAMING APP</a>
         <div class="btn-container">
           <a href="/login"><button type="button" class="btn">login</button></a>
           <a href="/signup"
             ><button type="button" class="btn">signup</button></a
           >
-          <a href="/admin"><button type="button" class="btn">admin</button></a>
+          <a href="/onboarding"
+            ><button type="button" class="btn">Dashboard</button></a
+          >
         </div>
       </nav>
     </div>
@@ -129,6 +131,8 @@
       </ul>
       <button id="savePlaylist" class="savePlaylist">Save Playlist</button>
     </section>
+
+    <a href="/playlist">All playlists</a>
 
     <script>
       const songList = document.getElementById("songList");
