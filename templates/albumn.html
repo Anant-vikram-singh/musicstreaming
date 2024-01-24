@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        background-color: blue;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>MUSIC STREAMING APP</h1>
+    <div class="btn-container">
+      <a href="/login"><button type="button" class="btn">login</button></a>
+      <a href="/signup"><button type="button" class="btn">signup</button></a>
+      <a href="/admin"><button type="button" class="btn">admin</button></a>
+    </div>
+
+    <div>
+      <h1>List of Playlists</h1>
+
+      <p>{{albumns}}</p>
+      <div class="playlistContainer">
+        {% for albumn in albumns %}
+        <p>{{albumn}}</p>
+        <div class="playlistContainer">
+          {% for song in albumn.songs %}
+          <p>{{song.name}}</p>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div></div>
+
+    <script></script>
+  </body>
+</html>
